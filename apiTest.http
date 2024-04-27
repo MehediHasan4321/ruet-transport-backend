@@ -1,0 +1,16 @@
+POST http://localhost:8000/users
+Content-Type: 'application/json'
+
+{
+    "name":"Mehedi Hasan"
+}
+
+###
+
+GET http://localhost:8000/users
+
+###
+GET http://localhost:8000/users/660fd2b6cb17a3b04884b91b
+
+###
+POST http://localhost:8000/
