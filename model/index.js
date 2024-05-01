@@ -10,13 +10,15 @@ class Seat {
 }
 
 class BookingInfo {
-    constructor(busId, seatId, userId) {
+    constructor(busId, seatId, user,seatName,busName) {
         this.busId = busId;
         this.seatId = seatId;
-        this.userId = userId;
+        this.seatName=seatName;
+        this.busName=busName
+        this.user = {name:user.name,phone:user.phone,distination:user.distination};
         this.createdAt = new Date();
         this.updateAt = new Date();
-        this.isBookingConfirm = false
+        this.status='pandding'
     }
 }
 

@@ -52,7 +52,7 @@ async function run() {
     app.get("/users", async (_req, res) => {
 
       const resutl = await usersCollection.find().toArray()
-      
+
       res.status(200).json(resutl)
 
     })
@@ -61,14 +61,14 @@ async function run() {
     // All transports methods are here
 
     app.post('/transports', async (req, res) => {
-      const { busSeat, busName, stopes,from } = req.body
-     
+      const { busSeat, busName, stopes } = req.body
 
-      if (!busName) return res.status(400).json({ message: "Bus name Required" });
-      if (!busSeat) return res.status(400).json({ message: "Bus Seat Number are Required" });
+
+      if (!busName) return res.status(400).json({ message: "Bus name is Required" });
+      if (busSeat.length === 0) return res.status(400).json({ message: "Bus Seat are Required" });
       if (stopes.length === 0) return res.status(400).json({ message: "Bus stopes are Required" });
 
-      const bus = createBus(busSeat, busName, stopes,from)
+      const bus = req.body
 
       const result = await transportsCollection.insertOne(bus)
 
@@ -101,46 +101,51 @@ async function run() {
       res.status(200).json(result)
     })
 
-    app.get('/transports/:id',async(req,res)=>{
+    app.get('/transports/:id', async (req, res) => {
       const id = req.params.id;
 
-      const queary = {_id: new ObjectId(id)}
+      const queary = { _id: new ObjectId(id) }
 
       const result = await transportsCollection.findOne(queary)
 
-      if(!result) return res.status(400).json({message:"Bus Not found"})
+      if (!result) return res.status(400).json({ message: "Bus Not found" })
 
       res.status(200).json(result)
 
     })
 
-    app.get("/transports",async(_req,res)=>{
+    app.get("/transports", async (_req, res) => {
 
       const result = await transportsCollection.find().toArray()
-       
+
       res.status(200).json(result)
     })
 
-    app.get('/seats/:busId',async(req,res)=>{
+    app.get('/seats/:busId', async (req, res) => {
 
       const busId = req.params.busId
-      const result = await transportsCollection.findOne({_id:new ObjectId(busId)})
-      const seats = result.busSeat
+      const result = await transportsCollection.findOne({ _id: new ObjectId(busId) })
+      const data = {
+        seats: result.busSeat,
+        pattan: result.seatPattan,
+        stopes:result.stopes,
+        busName:result.busName
+      }
 
-      res.status(200).json(seats)
+      res.status(200).json(data)
     })
 
 
     app.post('/booking', async (req, res) => {
-      const { busId, seatId, userId } = req.body;
-     
-      const bookingInfo = new BookingInfo(busId,seatId,userId)
+      const { busId, seatId, user,busName,seatName } = req.body;
 
-      const result = await  bookingCollection.insertOne(bookingInfo)
+      const bookingInfo = new BookingInfo(busId, seatId,user,seatName,busName)
+
+      const result = await bookingCollection.insertOne(bookingInfo)
 
       res.status(200).json(result)
 
-    
+
 
     })
 
@@ -153,19 +158,19 @@ async function run() {
 
     })
 
-    app.get('/booking',async(_req,res)=>{
+    app.get('/booking', async (_req, res) => {
 
       const result = await bookingCollection.find().toArray()
 
       res.status(200).json(result)
     })
 
-    app.patch('/tickets/:id',async(req,res)=>{
-      const {busSeat,seatId} = req.body;
+    app.patch('/tickets/:id', async (req, res) => {
+      const { busSeat, seatId } = req.body;
       const id = req.params.id
-  
-     
-      const  result = await transportsCollection.updateOne({_id:new ObjectId(id)},{$set:{"busSeat.$[el]":busSeat}},{arrayFilters:[{"el.seatId":seatId}]})
+
+
+      const result = await transportsCollection.updateOne({ _id: new ObjectId(id) }, { $set: { "busSeat.$[el]": busSeat } }, { arrayFilters: [{ "el.seatId": seatId }] })
 
       res.status(200).json(result)
 
