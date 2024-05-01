@@ -25,4 +25,4 @@ npm run dev
 ```
 
 
-Then it will Open [http://localhost:8000/halth](http://localhost:8000/health) with your browser to get the all API endpoint result.
+Then it will Open [http://localhost:8000/health](http://localhost:8000/health) with your browser to get the all API endpoint result.
