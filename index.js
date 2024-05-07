@@ -32,12 +32,22 @@ async function run() {
 
 
 
-    app.get('/users/:email', async (req, res) => {
+    app.get('/users/e/:email', async (req, res) => {
       const email = req.params.email
 
 
       const result = await usersCollection.findOne({ email })
       res.status(200).json(result)
+    })
+
+    app.get('/users/i/:id',async(req,res)=>{
+      const id= req.params.id
+      console.log(id)
+      const result = await usersCollection.findOne({_id:new ObjectId(id)})
+
+      if(!result)return res.status(400).json({message:'Resources Not found'})
+      res.status(200).json(result)
+
     })
 
     app.post("/users", async (req, res) => {
@@ -52,8 +62,15 @@ async function run() {
     app.get("/users", async (_req, res) => {
 
       const resutl = await usersCollection.find().toArray()
-
-      res.status(200).json(resutl)
+      const mapUser = resutl.map(user=>({
+        _id:user._id,
+        name:user.name,
+        email:user.email,
+        createAt:user.createAt,
+        updateAt:user.updateAt,
+        role:user.role
+      }))
+      res.status(200).json(mapUser)
 
     })
 
