@@ -14,7 +14,10 @@ npm i
 After installing all dependency create a .env file in the root of the project. And add the DB_URL=''
 
 ```javascript
-    DB_URI= 'provide your mongoDB URL with username and password'
+    DB_URI= 'provide your mongoDB URL'
+    DB_PASSWORD='Provide database password'
+    DB_USERNAME='Provide database username'
+    
 
 ```
 
